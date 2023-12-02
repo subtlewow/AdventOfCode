@@ -14,9 +14,7 @@ with open('temp.txt') as f:
         if len(new) == 1:
             new = new * 2
         
-        print(new)
-        
         count += int(new)
         new = ""
 
-    print(count)
+    print("The sum of all calibration values: {}".format(count))
