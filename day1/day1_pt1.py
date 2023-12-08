@@ -17,4 +17,5 @@ with open('./day1/day1.txt') as f:
         count += int(new)
         new = ""
 
+    # correct output: 54968
     print("The sum of all calibration values: {}".format(count))

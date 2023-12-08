@@ -39,5 +39,6 @@ with open('./day1/day1.txt') as f:
         
         total_numerical_cnt += int(char_cnt)
         char_cnt = ""
-        
+    
+    # CORRECT OUTPUT: 54094
     print("The sum of all calibration values: {}".format(total_numerical_cnt))

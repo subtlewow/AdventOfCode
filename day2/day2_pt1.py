@@ -1,11 +1,10 @@
-
 final_elem_cnt = {}
 key = 0
 value = 0
 config = {'red': 12, 'green': 13, 'blue': 14}
 true_valid = 1
 total_id = 0
-with open('day2.txt', 'r') as f:
+with open('./day2/day2.txt', 'r') as f:
     for line in f:
         s = line.strip('\n')
         
@@ -51,5 +50,6 @@ with open('day2.txt', 'r') as f:
             
         if true_valid and all(n == 1 for n in final_elem_cnt[game_id]):
             total_id += int(game_id)
-        
-    print(final_elem_cnt, total_id)
+    
+    # CORRECT OUTPUT: 2162
+    print(total_id) 
