@@ -1,55 +1,46 @@
-new = ""
-count = 0
-word_count = 0
-
 mapping = {
-    "one": 1,
-    "two": 2,
-    "three": 3,
-    "four": 4,
-    "five": 5,
-    "six": 6,
-    "seven": 7,
-    "eight": 8,
-    "nine": 9
+    "one": '1',
+    "two": '2',
+    "three": '3',
+    "four": '4',
+    "five": '5',
+    "six": '6',
+    "seven": '7',
+    "eight": '8',
+    "nine": '9'
 }
 
+ind_numerical_cnt = ""
+total_numerical_cnt = 0
+char_cnt = ""
+
+sorted_keys = sorted(mapping.keys(), key=len, reverse=True)
+found= False
 with open('day1.txt') as f:
-    # for line in f:
-        # tmp = list(line.strip('\n'))
-        tmp = "eightwothree"
-        key = ""
-        
-        for char in tmp:
-            key += char
-            
-            if key in mapping:
-                tmp = tmp.replace(key, "")
-                word_count += mapping[key]
-                key = ""
+    for line in f:
+        s = line.strip('\n')
+        i = 0
+        while i < len(s):
+            found = False
+            if i < len(s) and s[i].isdigit():
+                char_cnt += s[i]
+                i += 1
             else:
-                for mkey in mapping:
-                    if mkey in tmp:
-                        tmp = tmp.replace(mkey, "")
-                        word_count += mapping[mkey]
-                        mkey = ""
-
-                
-            
-            
-        print(tmp, word_count)
+                for word, digit in mapping.items():
+                    if s[i:i+len(word)] == word:
+                        char_cnt += mapping[word]
+                        i += 1
+                        found = True
+                if not found:
+                    i += 1
         
-        # for char in line:
-        #     ascii_val = ord(char)
-        #     if (48 <= ascii_val <= 57):
-        #         if len(new) >= 2:
-        #             new = str(int(new) // 10)
-        #         new += char
+        # single characters are interpreted as duplicates ie. '7e' is 77
+        if len(char_cnt) == 1:
+            char_cnt = char_cnt * 2
+        elif len(char_cnt) > 2:
+            char_cnt = char_cnt[0] + char_cnt[-1]
         
-        # if len(new) == 1:
-        #     new = new * 2
+        total_numerical_cnt += int(char_cnt)
+        char_cnt = ""
         
-        # count += int(new)
-        # new = ""
-
-    # print("The sum of all calibration values: {}".format(count))
+    print("The sum of all calibration values: {}".format(total_numerical_cnt))
