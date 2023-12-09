@@ -50,135 +50,17 @@ with open('day3.txt', 'r') as f:
                 if results:
                     found = True
                 
-                if found and not char_array[row][col+1].isdigit():
-                    elem_count += int(num)
-                    num = ""
+                if found:
+                    if col == len(char_array[row])-1:
+                        elem_count += int(num)
+                        num = ""
+                    elif col+1 < len(char_array[row]) and not char_array[row][col+1].isdigit():
+                        elem_count += int(num)
+                        num = ""
                 elif col+1 < len(char_array[row]) and not found and char_array[row][col+1] == '.':
                     num = ""
+                
             else:
                 found = False
                 
-                
-                # if col < len(char_array[row])-1:
-                #     DOWN = re.match(pattern, char_array[row+1][col])
-                #     RIGHT = re.match(pattern, char_array[row][col+1])
-                #     LR = re.match(pattern, char_array[row+1][col+1])
-                    
-                #     if DOWN or RIGHT or LR:
-                #         elem_count += int(num)
-                #         num = ""
-                #     elif not (DOWN or RIGHT or LR) and char_array[row][col+1] == '.':
-                #         num = ""
-                # elif col > 0 and row == 0:
-                #     LEFT 
-                #     LL
-                #     DOWN
-                #     LR
-                #     RIGHT    
-                
-                    
-                # else:
-                #     DOWN = re.match(pattern, char_array[row+1][col])
-                #     LL = re.match(pattern, char_array[row+1][col-1])    
-                    
-                #     if LL or DOWN:
-                #         elem_count += int(num)
-                #         num = ""
-                #     elif not (DOWN or LL) and char_array[row+1][col] == '.':
-                #         num = ""
-                
-                
-                # elif row == len(char_array)-1:
-                #     # UP = re.match(pattern, line[row+1][col])
-                #     # RIGHT = re.match(pattern, line[row][col+1])
-                #     
-                
-                
-                # if col == len(line)-1:
-                #     # DOWN and LEFT
-                #     LEFT = re.match(pattern, line[row][col-1])
-                
-
-                
-            
-            
-            # UP = re.match(pattern, line[row+1][col])
-            
-            # UL = re.match(pattern, line[row-1][col-1])
-            
-            # if col+1 < len(line):
-                
-            #     UR = re.match(pattern, line[row-1][col+1])
-            
-            ## DIAGONALS
-            
-            
-            
-            # LL = re.match(pattern, line[row+1][col-1])
-            # LR = re.match(pattern, line[row+1][col+1])
-            
-            
-            # if row == 0 and char_array[row][col].isdigit(): # first row then only
-            #     print('a')
-
-                
-    #             while char_array[row][col+1] != '.': 
-    #                 num += char_array[row][col]
-    #                 if (LEFT or RIGHT) or (LL or LR) or (DOWN):
-    #                     elem_count += int(num)
-    #                 print(num)
-        
-    
-    
-        
-        # for col, char in enumerate(line):
-            
-#             print(grid[row][col])
-            
-            
-            # check prev rows
-            # if row > 0:
-            
-            # else:
-            #     # checking if symbol char
-                
-            #     ## VERTICAL
-            
-                    
-
-    
-    # for row, line in enumerate(f):
-    #     line = line.strip('\n')
-        
-        # iterating across the row
-        # for col, elem in enumerate(line):
-        #     if elem.isdigit():
-        #         if row > 0:
-        #             pass
-        #         else:
-        #             line[row+1]
-                
-            
-            # print(col, elem)
-
-            
-        
-        # only need to check for next row
-        # if row == 0:
-            
-        # # only time need to check for previous row
-        # if row > 0:
-        
-        
-        # check must be performed for every number encountered
-        # once number is encountered, need to check around it for an adjacent symbol that isn't a period symbol
-        # need: final moment number is encountered prior to period symbol, store this index
-        # index then used for next line iteration
-        
-        # an index that tracks the row number, n
-        # another index that tracks:
-            # left: [i-1, j], right: [i+1, j]
-            # up: [i, j+1], down: [i, j-1]
-            # diagonal UL: [i-1, j+1], diagonal UR: [i+1, j+1]
-            # diagonal LL: [i-1, j-1], diagonal LR: [i+1, j-1]
-        #
+    print(f"Sum of all part numbers: {elem_count}")
