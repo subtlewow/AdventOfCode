@@ -24,7 +24,7 @@ def process_digit(row, col, char_array):
         "LR": (row+1, col+1)
     }
     
-    for _, (r, c) in directions.items():
+    for (r, c) in directions.values():
         if is_valid_position(r, c, max_row, max_col):
             match = re.match(pattern, char_array[r][c])
             if match:
