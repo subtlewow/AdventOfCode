@@ -1,6 +1,6 @@
 import re
 
-pattern = r'[^a-zA-Z0-9\.]'
+pattern = r'[^a-zA-Z0-9\.]' # only look for special chars, excluding '.' chars
 elem_count = 0
 
 grid = ""
@@ -42,25 +42,29 @@ with open('day3.txt', 'r') as f:
     for row, line in enumerate(char_array):
         num = ""
         found = False
-        for col, char in enumerate(line):
-            if char_array[row][col].isdigit():
-                num += char_array[row][col]
-                results = process_digit(row, col, char_array)
-                
-                if results:
+        
+        for col, _ in enumerate(line):
+            current_char = line[col]
+            if current_char.isdigit():
+                num += current_char
+
+                # if found, adjacent character is found, no need to update `found` var
+                if not found and process_digit(row, col, char_array):
                     found = True
                 
-                if found:
-                    if col == len(char_array[row])-1:
-                        elem_count += int(num)
-                        num = ""
-                    elif col+1 < len(char_array[row]) and not char_array[row][col+1].isdigit():
-                        elem_count += int(num)
-                        num = ""
-                elif col+1 < len(char_array[row]) and not found and char_array[row][col+1] == '.':
+                # check if number at end of line
+                is_last_col = (col == len(line)-1)
+                next_char_not_digit = (col + 1 < len(line) and not line[col+1].isdigit())
+                
+                if found and (is_last_col or next_char_not_digit):
+                    elem_count += int(num)
+                    num = ""
+                    found = False
+                elif not found and next_char_not_digit and line[col+1] == '.':
                     num = ""
                 
             else:
                 found = False
-                
+    
+    # correct output: 528799
     print(f"Sum of all part numbers: {elem_count}")
