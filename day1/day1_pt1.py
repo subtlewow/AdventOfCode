@@ -1,21 +1,30 @@
-new = ""
-count = 0
-with open('./day1/day1.txt') as f:
-    for line in f:
-        tmp = list(line.strip('\n'))
-        
-        for i, char in enumerate(tmp):
-            ascii_val = ord(char)
-            if (ascii_val >= 48 and ascii_val <= 57):
-                if len(new) >= 2:
-                    new = str(int(new) // 10)
-                new += char
-        
-        if len(new) == 1:
-            new = new * 2
-        
-        count += int(new)
-        new = ""
+import os
+import sys
 
-    # correct output: 54968
-    print("The sum of all calibration values: {}".format(count))
+sys.path.append(os.getcwd())
+
+import input_parser
+
+puzzle_input = input_parser.input_parser('day1')
+count = 0
+new = ""
+
+for line in puzzle_input:
+    new = ""
+    
+    for i, char in enumerate(line):
+        ascii_val = ord(char)
+
+        if (48 <= ascii_val <= 57):
+            if len(new) >= 2:
+                new = str(int(new) // 10)
+            new += char
+        
+    if len(new) == 1:
+        new = new * 2
+        
+    if new:
+        count += int(new)
+        
+print("The sum of all calibration values: {}".format(count))
+
