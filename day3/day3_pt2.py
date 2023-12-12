@@ -1,16 +1,19 @@
 import re
+from functools import reduce
 
 pattern = r'\*' # only look for special chars, excluding '.' chars
-elem_count = 0
+num_pattern = r'\d+' # looks for numbers
 
 grid = ""
 num = ""
+asterik = '*'
 found = False
+
 
 def is_valid_position(row, col, max_row, max_col):
     return 0 <= row < max_row and 0 <= col < max_col
 
-def is_adjacent(row, col, char_array):
+def is_adjacent_number(row, col, char_array):
     max_row = len(char_array)
     max_col = len(char_array[0]) if max_row > 0 else 0
     directions = {
@@ -24,24 +27,54 @@ def is_adjacent(row, col, char_array):
         "LR": (row+1, col+1)
     }
     
-    for _, (r, c) in directions.items():
-        if is_valid_position(r, c, max_row, max_col):
-            match = re.match(pattern, char_array[r][c])
+    for _, (row, col) in directions.items():
+        if is_valid_position(row, col, max_row, max_col):
+            match = re.match(pattern, char_array[row][col])
             if match:
-                return True
+                return [row, col]
     
     return False
+
+def is_adjacent_asteriks(row, col, char_array):
+    max_row = len(char_array)
+    max_col = len(char_array[0]) if max_row > 0 else 0
+    idx_array = []
+    directions = {
+        "UP": (row-1, col),
+        "DOWN": (row+1, col),
+        "LEFT": (row, col-1),
+        "RIGHT": (row, col+1),
+        "UL": (row-1, col-1),
+        "UR": (row-1, col+1),
+        "LL": (row+1, col-1),
+        "LR": (row+1, col+1)
+    }
+    
+    for _, (row, col) in directions.items():
+        if is_valid_position(row, col, max_row, max_col):
+            match = re.match(num_pattern, char_array[row][col])
+            if match:
+                idx_array.append([row, col])
+    
+    return idx_array if len(idx_array) > 0 else []
+
 
 def construct_grid_numbers(char_array, num=""): 
     first = False 
     last = False 
+    adjacent = False
+    asteriks = False
     
     first_idx = -1
     last_idx = -1 
     
-    adjacent = False
+    idx_array = []
+    number = []
+    final = 1
+    final_count = 0
     
     num_idx_map = {}
+    
     for row, line in enumerate(char_array):
         first_idx, last_idx = -1, -1
         adjacent = False
@@ -58,18 +91,20 @@ def construct_grid_numbers(char_array, num=""):
                     
                 num += current_char
                 
-                if is_adjacent(row, col, char_array):
+                if is_adjacent_number(row, col, char_array):
                     adjacent = True
                 
                 if col+1 < len(line) and not line[col+1].isdigit():
                     last = True
                     last_idx = col
             else:
-                if current_char == '*':
-                    if current_char not in num_idx_map:
-                        num_idx_map[current_char] = [row, [row, col]]
-                    else:
-                        num_idx_map[current_char].append([row, [row, col]])
+                if current_char == asterik:
+                    idx_array = is_adjacent_asteriks(row, col, char_array) # tracks the position of asteriks, will use to check adjacent elements to this position to determine numbers
+                
+                if idx_array and len(idx_array) <= 2:
+                    idx_array = []
+                    num_idx_map = {}
+                    break
                 
                 first_idx, last_idx = -1, -1
                 adjacent = False
@@ -77,8 +112,63 @@ def construct_grid_numbers(char_array, num=""):
                 last = False
                 num = ""
             
+            # if not is_adjacent_number(row, col, char_array):
+            #     num_idx_map.clear()
+            
             if first and last and adjacent:
-                num_idx_map[num] = [row, [first_idx, last_idx]]
+                num_idx_map[int(num)] = [row, [first_idx, last_idx]]
+                
+        
+        if idx_array and len(idx_array) >= 2 and len(num_idx_map) > 1:
+            items = list(num_idx_map.items())
+            
+            for i, item in enumerate(items):
+                key, curr_vals = item
+                
+                for x in range(curr_vals[1][0], curr_vals[1][1]+1):
+                    combination = [curr_vals[0], x]
+                        
+                    if combination in idx_array:
+                        number.append(key)
+                    
+                    if len(number) == 2:
+                        final = reduce(lambda x, y: x * y, number)
+                        final_count += final
+                        final = 1
+                        number = []
+                        num_idx_map.clear()
+                        idx_array = []
+                        break
+                    
+        elif idx_array and len(idx_array) < 2:
+            num_idx_map.clear()
+        
+    print(final_count)
+            
+        
+        # check if numbers in hashmap are greater than 2, 
+        
+        # if number_count >= 2 and '*' in num_idx_map:
+            # items = list(num_idx_map.items())
+            
+            # for i, item in enumerate(items):
+            #     key, curr_vals = item
+                
+            #     if key == '*':
+                    
+                
+                
+            #     if key == '*' and i > 0:
+            #     #     if curr_vals[0] - prev_vals[0] == 1:
+            #     #         asteriks = True
+                
+            #     # if asteriks: # iterate over all idx combinations enumerated in hashmap
+            #     #     for i in range(curr_vals[0]):
+                        
+                        
+                        
+            #     prev_vals = curr_vals
+            
                 
             
                 
@@ -96,7 +186,7 @@ with open('./inputs/day3.txt', 'r') as f:
         
     char_array = [list(line) for line in grid.strip().split('\n')]
     
-    tmp = [[] for _ in range(len(char_array))]
+    # tmp = [[] for _ in range(len(char_array))]
     
     construct_grid_numbers(char_array)
     
