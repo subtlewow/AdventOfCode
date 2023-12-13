@@ -84,7 +84,7 @@ with open('./inputs/day3.txt', 'r') as f:
                 # adjacency will be indices of type list where adjacency occurs
                 
                 # checking last occurrence
-                if not last and col+1 < len(line) and line[col+1] == '.':
+                if not last and col+1 < len(line) and not line[col+1].isdigit():
                     last = True
                     last_idx = col
                 elif col+1 == len(line):
@@ -113,19 +113,6 @@ with open('./inputs/day3.txt', 'r') as f:
                                     adjacent_icon_indices[adj_str] = [int(number)]
                                 else:
                                     adjacent_icon_indices[adj_str].append(int(number))
-                                
-                                # calculating gear ratio and summing up results
-                                if len(adjacent_icon_indices[adj_str]) > 1:
-                                    values_lst = adjacent_icon_indices[adj_str]
-                                    total_product_sum = 0
-                                    
-                                    # multiply adjacent elements and sum results
-                                    for i in range(len(values_lst)-1):
-                                        product = values_lst[i] * values_lst[i + 1]  # Multiply adjacent elements
-                                        total_product_sum += product
-                                   
-                                    final += total_product_sum
-                                    print(final)
                                     
             else:   
                 number = ""
@@ -137,8 +124,13 @@ with open('./inputs/day3.txt', 'r') as f:
                 last_idx = -1
                 
     print(adjacent_icon_indices)
-    
-    
+
+    # multiply numbers then sum up
+    for values in adjacent_icon_indices.values():
+        if len(values) == 2:        
+            final += (values[0] * values[1])
+            
+        # print(final)
         
     print(final)
             
