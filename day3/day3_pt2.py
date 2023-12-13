@@ -112,9 +112,6 @@ def construct_grid_numbers(char_array, num=""):
                 last = False
                 num = ""
             
-            # if not is_adjacent_number(row, col, char_array):
-            #     num_idx_map.clear()
-            
             if first and last and adjacent:
                 num_idx_map[int(num)] = [row, [first_idx, last_idx]]
                 
@@ -144,40 +141,6 @@ def construct_grid_numbers(char_array, num=""):
             num_idx_map.clear()
         
     print(final_count)
-            
-        
-        # check if numbers in hashmap are greater than 2, 
-        
-        # if number_count >= 2 and '*' in num_idx_map:
-            # items = list(num_idx_map.items())
-            
-            # for i, item in enumerate(items):
-            #     key, curr_vals = item
-                
-            #     if key == '*':
-                    
-                
-                
-            #     if key == '*' and i > 0:
-            #     #     if curr_vals[0] - prev_vals[0] == 1:
-            #     #         asteriks = True
-                
-            #     # if asteriks: # iterate over all idx combinations enumerated in hashmap
-            #     #     for i in range(curr_vals[0]):
-                        
-                        
-                        
-            #     prev_vals = curr_vals
-            
-                
-            
-                
-            
-            
-            
-        
-        
-            
                 
 
 with open('./inputs/day3.txt', 'r') as f:
@@ -185,8 +148,6 @@ with open('./inputs/day3.txt', 'r') as f:
         grid += line
         
     char_array = [list(line) for line in grid.strip().split('\n')]
-    
-    # tmp = [[] for _ in range(len(char_array))]
     
     construct_grid_numbers(char_array)
     
