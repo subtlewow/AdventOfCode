@@ -80,4 +80,4 @@ spent 3 days doing this one..
 conclusion:
 1. could just perform adjacency calculation by indexing row, col by either (-1, 0, +1).
 2. number building would happen if adjacency with number spotted and number was different to 0
-3. did operations based on finding gear locations, and used the index as the key for dict
+3. did operations based on finding gear locations, and used the index as the unique key identifier for dict - had this correct in initial approach
