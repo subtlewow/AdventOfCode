@@ -61,3 +61,15 @@ with open('./day1/day1.txt') as f:
     # correct output: 54968
     print("The sum of all calibration values: {}".format(count))
 ```
+
+
+## Day 2
+
+[https://adventofcode.com/2023/day/2](https://adventofcode.com/2023/day/2)
+
+
+## Day 3
+[https://adventofcode.com/2023/day/3](https://adventofcode.com/2023/day/3)
+
+spent 3 days doing this one.. 
+
