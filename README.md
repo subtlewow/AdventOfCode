@@ -73,3 +73,11 @@ with open('./day1/day1.txt') as f:
 
 spent 3 days doing this one.. 
 
+1. overcomplicated the process of calculating adjacency
+2. searching adjacency for gear icons based on number digits found, and struggled with building numbers when it was found not at start
+3. was building numbers and performing operations based on indexing.. horrible and confusing approach.
+
+conclusion:
+1. could just perform adjacency calculation by indexing row, col by either (-1, 0, +1).
+2. number building would happen if adjacency with number spotted and number was different to 0
+3. did operations based on finding gear locations, and used the index as the key for dict
