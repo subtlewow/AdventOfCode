@@ -36,7 +36,7 @@ for r in range(R):
                         adj_elem = grid[r+rr][c+cc]
                         
                         if adj_elem and adj_elem != '.':
-                            has_part = True
+                            has_part = True # number is found, need to create number
                         
                         if adj_elem == '*':
                             gears.add((r+rr, c+cc))
