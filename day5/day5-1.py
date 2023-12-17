@@ -22,7 +22,7 @@ with open('./inputs/day5.txt', 'r') as f:
             else:
             # parsing first line ie. 'seeds: etc..' 
                 if not line[0].isdigit():
-                    text = line[0].strip('s:')
+                    text = line[0].strip(':')
                 
                 # hash input requirements and numbers_to_query in a map
                 if len(line[1:]) > 3:
@@ -30,23 +30,56 @@ with open('./inputs/day5.txt', 'r') as f:
                 else:
                     dest_start, source_start, range_len = list(map(int, line)) # seed-to-soil
                     
-                    dest_values.extend(range(dest_start, dest_start + range_len))
-                    source_values.extend(range(source_start, source_start + range_len))
+                    for i in range(range_len):
+                        iter_map[source_start + i] = dest_start + i
+                    
+                    # dest_values.extend(range(dest_start, dest_start + range_len))
+                    # source_values.extend(range(source_start, source_start + range_len))
         else:
-            # constructs hashmap for source-dest pairs
-            if dest_values and source_values:
-                zipped_pairs = sorted(zip(source_values, dest_values))
-                sorted_dest_values = {source: dest for source, dest in zipped_pairs}
+            query_chain = []
+            for num in numbers_to_query:
+                query_chain.append(iter_map.get(num, num))
                 
-                for num in numbers_to_query:
-                    if num in dest_values or num in source_values:
-                        query_chain.append(sorted_dest_values[num])
-                    else:
-                        query_chain.append(num)
+            numbers_to_query = query_chain
+            iter_map = defaultdict(int)
+            
+        print(text, numbers_to_query)
 
-                numbers_to_query = query_chain
+        #     # constructs hashmap for source-dest pairs
+        #     if dest_values and source_values:
+        #         zipped_pairs = sorted(zip(source_values, dest_values))
+        #         sorted_dest_values = {source: dest for source, dest in zipped_pairs}
                 
-            print(numbers_to_query)
-                        
+        #         for num in numbers_to_query:
+        #             if num in dest_values or num in source_values:
+        #                 query_chain.append(sorted_dest_values[num])
+        #             else:
+        #                 query_chain.append(num)
+
+        #         numbers_to_query = query_chain
+            
+        #     dest_values = []
+        #     source_values = []
+        #     query_chain = []
         
+# process the last batch of data after the loop
+# if dest_values and source_values:
+#     zipped_pairs = sorted(zip(source_values, dest_values))
+#     sorted_dest_values = {source: dest for source, dest in zipped_pairs}
+
+query_chain = []
+for num in numbers_to_query:
+    query_chain.append(iter_map.get(num, num))
+numbers_to_query = query_chain
+
+print("Lowest location number: {}".format(min(numbers_to_query)))
     
+#         if num in dest_values or num in source_values:
+#             query_chain.append(sorted_dest_values[num])
+#         else:
+#             query_chain.append(num)
+
+#     numbers_to_query = query_chain
+
+# print(text, numbers_to_query)  # Final output after the last processing
+# print("Lowest location number: {}".format(min(numbers_to_query)))
