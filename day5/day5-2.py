@@ -1,33 +1,33 @@
-# range start, range length
-
 filename = './inputs/day5.txt'
-inputs, *blocks = open(filename).read().split('\n\n')
 
-inputs = list(map(int, inputs.split(':')[1].split()))
-seeds = []
+seeds, *blocks = open(filename, 'r').read().split('\n\n')
 
-for i in range(0, len(inputs), 2):
-    seeds.append((inputs[i], inputs[i] + inputs[i+1]))
+# parse first line of input ie. seeds
+seeds = list(map(int, seeds.split(':')[1].split()))
+seeds = [(seeds[i], seeds[i] + seeds[i+1]) for i in range(0, len(seeds), 2)]
 
 print(seeds)
 for block in blocks:
     ranges = []
     for line in block.splitlines()[1:]:
         ranges.append(list(map(int, line.split())))
-    
-    new = []
-    
+
     while len(seeds) > 0:
-        s, e = seeds.pop()
+        start, end = seeds.pop()
         
-        for a, b, c in ranges:
+        for dest_st, src_st, range_len in ranges:
+            # finding intersection ie. overlap
+            os = max(start, src_st) # overlap start
+            oe = min(end, src_st + range_len) # overlap end
             
-        # for dest_start, source_start, range_len in ranges:
-        #     for val in range(start, end):
-        #         if source_start <= val < source_start + range_len: # 98 <= 80 < 100
-        #             new.append(val - source_start + dest_start)
-        #             break
-        #     else:
-        #         new.append(val)
-                    
-    print(new)
+            if os < oe:
+                new.append((os - src_st + dest_st, oe - src_st + dest_st))
+
+        
+        
+print(ranges)
+
+                
+        
+        
+
