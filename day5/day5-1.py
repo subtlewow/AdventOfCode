@@ -1,85 +1,33 @@
-# (destination start, source start, range) - gives a subset of entire data, then extrapolate to fit entire data from 0 -> n
+filename = './inputs/day5.txt'
 
-# ie. seed-to-soil then (soil start, seed start, range)
-from collections import defaultdict
+seeds, *blocks = open(filename, 'r').read().split('\n\n')
 
-mapping = defaultdict(list)
-iter_map = defaultdict(int)
+# parse first line of input ie. seeds
+seeds = list(map(int, seeds.split(':')[1].split()))
+seeds = [(seeds[i], seeds[i] + seeds[i+1]) for i in range(0, len(seeds), 2)]
 
-with open('./inputs/day5.txt', 'r') as f:
-    numbers_to_query = []
-    source_ls = []
-    dest_values = []
-    source_values = []
-    query_chain = []
-    for i, line in enumerate(f):
-        line = line.strip('\n').split()
+print(seeds)
+for block in blocks:
+    ranges = []
+    for line in block.splitlines()[1:]:
+        ranges.append(list(map(int, line.split())))
+
+    while len(seeds) > 0:
+        start, end = seeds.pop()
         
-        # finding source-destination input, and number query
-        if line:
-            if line[1] == 'map:':
-                text = line[0]
-            else:
-            # parsing first line ie. 'seeds: etc..' 
-                if not line[0].isdigit():
-                    text = line[0].strip(':')
-                
-                # hash input requirements and numbers_to_query in a map
-                if len(line[1:]) > 3:
-                    numbers_to_query = list(map(int, line[1:]))
-                else:
-                    dest_start, source_start, range_len = list(map(int, line)) # seed-to-soil
-                    
-                    for i in range(range_len):
-                        iter_map[source_start + i] = dest_start + i
-                    
-                    # dest_values.extend(range(dest_start, dest_start + range_len))
-                    # source_values.extend(range(source_start, source_start + range_len))
-        else:
-            query_chain = []
-            for num in numbers_to_query:
-                query_chain.append(iter_map.get(num, num))
-                
-            numbers_to_query = query_chain
-            iter_map = defaultdict(int)
+        for dest_st, src_st, range_len in ranges:
+            # finding intersection ie. overlap
+            os = max(start, src_st) # overlap start
+            oe = min(end, src_st + range_len) # overlap end
             
-        print(text, numbers_to_query)
+            if os < oe:
+                new.append((os - src_st + dest_st, oe - src_st + dest_st))
 
-        #     # constructs hashmap for source-dest pairs
-        #     if dest_values and source_values:
-        #         zipped_pairs = sorted(zip(source_values, dest_values))
-        #         sorted_dest_values = {source: dest for source, dest in zipped_pairs}
-                
-        #         for num in numbers_to_query:
-        #             if num in dest_values or num in source_values:
-        #                 query_chain.append(sorted_dest_values[num])
-        #             else:
-        #                 query_chain.append(num)
-
-        #         numbers_to_query = query_chain
-            
-        #     dest_values = []
-        #     source_values = []
-        #     query_chain = []
         
-# process the last batch of data after the loop
-# if dest_values and source_values:
-#     zipped_pairs = sorted(zip(source_values, dest_values))
-#     sorted_dest_values = {source: dest for source, dest in zipped_pairs}
+        
+print(ranges)
 
-query_chain = []
-for num in numbers_to_query:
-    query_chain.append(iter_map.get(num, num))
-numbers_to_query = query_chain
+                
+        
+        
 
-print("Lowest location number: {}".format(min(numbers_to_query)))
-    
-#         if num in dest_values or num in source_values:
-#             query_chain.append(sorted_dest_values[num])
-#         else:
-#             query_chain.append(num)
-
-#     numbers_to_query = query_chain
-
-# print(text, numbers_to_query)  # Final output after the last processing
-# print("Lowest location number: {}".format(min(numbers_to_query)))
