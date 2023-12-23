@@ -2,8 +2,13 @@ class Game:
     def __init__(self):
         self.players = []
         self.num_players = 0
+        self.grid_size = 0
         self.setup_game()
-        
+    
+    @staticmethod
+    def error_message(msg):
+        print(f"\033[91m{msg}\033[0m")
+    
     def setup_game(self):
         welcome_screen = """
         \033[32m
@@ -27,22 +32,49 @@ class Game:
         \033[0m
         """
         
+            # Checking valid inputs for Grid Size and Number of Players.
         
-        self.grid_size = int(input("Enter size of grid: "))
-        
-        while self.num_players < 2:
-            try:
-                self.num_players = int(input("How many players to play?: "))
+        valid_input = False
+        while not valid_input:
+            while self.grid_size < 2:
+                try:
+                    self.grid_size = int(input("Enter size of grid eg. 2, 3 etc.. : "))
+                    
+                    if self.grid_size < 2:
+                        Game.error_message("Grid size must be at least 2x2.")
+                    
+                except ValueError:
+                    Game.error_message("Invalid input. Please enter a valid number for grid size.")
+            
+            while self.num_players < 2 or self.num_players % 2 == 1:
+                try:
+                    self.num_players = int(input("How many players to play?: "))
+                    
+                    if self.num_players < 2:
+                        Game.error_message("Number of players must be more than 1.")
+                    elif self.num_players % 2:
+                        Game.error_message("There can only be an even number of players.")
+                    
+                except ValueError:
+                    Game.error_message('Invalid input. Please enter a valid number for number of players.')
+            
+            if self.grid_size < self.num_players:
+                Game.error_message(f"Grid Size of {self.grid_size}x{self.grid_size} cannot accommodate for {self.num_players} players.\nPlease adjust your grid size, or number of players.")
                 
-                if self.num_players < 2:
-                    print("try again, players > 2")
-                
-            except ValueError:
-                print('try again?')
+                self.grid_size = 0
+                self.num_players = 0
+            else:
+                valid_input = True
             
         self.board = Board(self.grid_size, self.grid_size)
         
-        # check if grid size can accomodate chosen players
+        # check if grid size can accommodate chosen players
+        # if self.grid_size > self.num_players:
+            
+        
+        
+        # 2x2, 2 players
+        # 3x3, at most 3 players 
         
         
                 
