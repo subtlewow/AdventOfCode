@@ -1,13 +1,26 @@
+import time
+
+
 class Game:
     def __init__(self):
         self.players = []
         self.num_players = 0
         self.grid_size = 0
+        self.symbol_pool = ['x', 'o', '#', '$', '%', '&', '*']
+        
         self.setup_game()
+        self.main_logic()
     
     @staticmethod
     def error_message(msg):
-        print(f"\033[91m{msg}\033[0m")
+        print(f"\033[91m{msg}\033[0m") # using ANSI escape codes for coloured text in terminal output
+    
+    @staticmethod
+    def animate_text(text, delay=0.0003):
+        for char in text:
+            print(char, end='', flush=True)
+            time.sleep(delay)
+        print()
     
     def setup_game(self):
         welcome_screen = """
@@ -34,8 +47,8 @@ class Game:
         
             # Checking valid inputs for Grid Size and Number of Players.
         
-        valid_input = False
-        while not valid_input:
+        valid_input = True
+        while valid_input:
             while self.grid_size < 2:
                 try:
                     self.grid_size = int(input("Enter size of grid eg. 2, 3 etc.. : "))
@@ -64,77 +77,100 @@ class Game:
                 self.grid_size = 0
                 self.num_players = 0
             else:
-                valid_input = True
+                valid_input = False
             
         self.board = Board(self.grid_size, self.grid_size)
         
-        # check if grid size can accommodate chosen players
-        # if self.grid_size > self.num_players:
-            
+        player_names = set()
         
-        
-        # 2x2, 2 players
-        # 3x3, at most 3 players 
-        
-        
-                
         for i in range(self.num_players):
-            player_name = input(f"Enter the name of Player {i+1}: ")
-            self.players.append(Player(player_name))
-        
-        print(welcome_screen)
-        input("Press Enter to continue.. ")
-        Board().print_grid()
+            while True:
+                player_name = input(f"Enter the name of Player {i+1}: ")
+                
+                if player_name and player_name not in player_names:
+                    player_names.add(player_name)
+                    self.players.append(Player(player_name))
+                    break
+                else:
+                    Game.error_message("Invalid input or name already taken. Please enter a unique name.")
+
+        Game.animate_text(welcome_screen)
+        input("Press Enter to continue... \n")
     
-    def main_logic():
-        pass
+    def main_logic(self):
+        
+        # while grid is not full, or no one has won
+        for i, player in enumerate(self.players):
+            x = y = -1
+            print(f"Player {player.name}'s Turn! Your symbol is {self.symbol_pool[i]} \n")
+            self.board.print_update_grid()
+            
+            while True:
+                try:
+                    location = input("Enter location you want to tag. eg. 4 2: ")
+                    x, y = map(int, location.split())
+                    
+                    valid_position = (0 <= x < self.grid_size and 0 <= y < self.grid_size)
+                    
+                    if valid_position:
+                        if not self.board.grid[x][y]:
+                            self.board.grid[x][y] = self.symbol_pool[i]
+                            self.board.print_update_grid(x, y, self.symbol_pool[i])
+                            break
+                        else:
+                            Game.error_message("Position is already occupied! ")
+                            
+                        print(self.board.grid)
+                    else:
+                        Game.error_message("Invalid position. Position exceeds allowable range. Try again. ")
+                    
+                except ValueError:
+                    Game.error_message("Invalid input. Please enter a location in the same format as the example. ")
+                
+        # 4 2
+        # determine which player is active (boolean)
+
+        # check adjacency ie. diagonal / straight lines
+        
+        
+        
+        
     
 class Board:
-    def __init__(self, cols: int = 3, rows: int = 3):
+    def __init__(self, cols: int, rows: int):
         assert cols == rows, "cols and rows must be same dimensions"
         
         self.rows = rows
         self.cols = cols
         self.grid = [['' for _ in range(cols)] for _ in range(rows)]
-        
-    def print_grid(self):
-        i = j = 0
-        connect = ""
-        breaker = False
-        while i < self.rows:
-            while j < self.cols:
-                if j == 0:
-                    print(' ', end='')
-                
-                if j == self.cols-1:
-                    print("_", end=" ")
-                else:
-                    print('_', end=" | ")
-                
-                j += 1
-                
-            j = 0
-            i += 1
-            
-            print() # new line
-            
-            if not breaker:
-                for k in range(self.cols):
-                    if k == self.cols-1:
-                        connect += ('-' * 3) 
-                    else:
-                        connect += ('-' * 3) + 'x'
-                
-            print(connect)
-            breaker = True
     
-    def update_grid():
-        pass
-        
+    def print_update_grid(self, row_pos="", col_pos="", symbol=""):
+        connect = ""
+        for i in range(self.rows):
+            k = 0
+            for j in range(self.cols):
+                
+                # update grid when new element is seen
+                if row_pos and col_pos and symbol: 
+                    if i == row_pos and j == col_pos:
+                        self.grid[i][j] = symbol
+                
+                cell_content = self.grid[i][j] if self.grid[i][j] else '_'
+                
+                print(cell_content, end=' | ' if j < self.cols-1 else " ")
+                k += 1
+                
+            print()
+
+            if i < self.rows-1:
+                print('--x' + ('---x' * (self.cols-2)) + '--')
+                
+        print()
     
 class Player:
     def __init__(self, name):
         self.name = name
+        
     
     
 
