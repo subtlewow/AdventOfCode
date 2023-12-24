@@ -1,4 +1,5 @@
 import time
+from collections import defaultdict
 
 
 class Game:
@@ -7,6 +8,7 @@ class Game:
         self.num_players = 0
         self.grid_size = 0
         self.symbol_pool = ['x', 'o', '#', '$', '%', '&', '*']
+        self.len_adj = defaultdict(list)
         
         self.setup_game()
         self.main_logic()
@@ -21,6 +23,13 @@ class Game:
             print(char, end='', flush=True)
             time.sleep(delay)
         print()
+    
+    def check_win_condition(self, symbol):
+        for row in self.board.grid:
+            if all(item == symbol for item in row):
+                return True
+            
+            return False
     
     def setup_game(self):
         welcome_screen = """
@@ -49,12 +58,12 @@ class Game:
         
         valid_input = True
         while valid_input:
-            while self.grid_size < 2:
+            while self.grid_size < 3:
                 try:
-                    self.grid_size = int(input("Enter size of grid eg. 2, 3 etc.. : "))
+                    self.grid_size = int(input("Enter size of grid eg. 3, 4 etc.. : "))
                     
-                    if self.grid_size < 2:
-                        Game.error_message("Grid size must be at least 2x2.")
+                    if self.grid_size < 3:
+                        Game.error_message("Grid size must be at least 3x3.")
                     
                 except ValueError:
                     Game.error_message("Invalid input. Please enter a valid number for grid size.")
@@ -85,7 +94,7 @@ class Game:
         
         for i in range(self.num_players):
             while True:
-                player_name = input(f"Enter the name of Player {i+1}: ")
+                player_name = input(f"Enter the name of Player {i+1}: ").strip()
                 
                 if player_name and player_name not in player_names:
                     player_names.add(player_name)
@@ -100,32 +109,47 @@ class Game:
     def main_logic(self):
         
         # while grid is not full, or no one has won
-        for i, player in enumerate(self.players):
-            x = y = -1
-            print(f"Player {player.name}'s Turn! Your symbol is {self.symbol_pool[i]} \n")
-            self.board.print_update_grid()
-            
-            while True:
-                try:
-                    location = input("Enter location you want to tag. eg. 4 2: ")
-                    x, y = map(int, location.split())
-                    
-                    valid_position = (0 <= x < self.grid_size and 0 <= y < self.grid_size)
-                    
-                    if valid_position:
-                        if not self.board.grid[x][y]:
-                            self.board.grid[x][y] = self.symbol_pool[i]
-                            self.board.print_update_grid(x, y, self.symbol_pool[i])
-                            break
+        win = False
+        new_x = new_y = 0
+        
+        while not win:
+            for i, player in enumerate(self.players):
+                x = y = -1
+                print(f"Player {player.name}'s Turn! Your symbol is {self.symbol_pool[i]} \n")
+                self.board.print_update_grid()
+                
+                while True:
+                    try:
+                        location = input("Enter location you want to tag. eg. 4 2: ")
+                        x, y = map(int, location.split())
+                        
+                        valid_position = (0 <= x < self.grid_size and 0 <= y < self.grid_size)
+                        
+                        if valid_position:
+                            if not self.board.grid[x][y]:
+                                self.board.grid[x][y] = self.symbol_pool[i]
+                                self.board.print_update_grid(x, y, self.symbol_pool[i])
+                                # # self.len_adj[self.symbol_pool[i]].append((x, y))
+                                
+                                # # counts symbol occurrence
+                                # symbol_counts = {}
+                                # for ls in self.board.grid:
+                                #     for symbol in ls:
+                                #         if symbol:
+                                #             symbol_counts[symbol] = symbol_counts.get(symbol, 0) + 1
+                                
+                                # if any(v > 2 for v in symbol_counts.values()):
+                                # for i in 
+                                
+
+                            else:
+                                Game.error_message("Position is already occupied! ")
+
                         else:
-                            Game.error_message("Position is already occupied! ")
-                            
-                        print(self.board.grid)
-                    else:
-                        Game.error_message("Invalid position. Position exceeds allowable range. Try again. ")
-                    
-                except ValueError:
-                    Game.error_message("Invalid input. Please enter a location in the same format as the example. ")
+                            Game.error_message("Invalid position. Position exceeds allowable range. Try again. ")
+                        
+                    except ValueError:
+                        Game.error_message("Invalid input. Please enter a location in the same format as the example. ")
                 
         # 4 2
         # determine which player is active (boolean)
