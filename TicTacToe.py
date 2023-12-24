@@ -19,17 +19,35 @@ class Game:
     
     @staticmethod
     def animate_text(text, delay=0.0003):
+        '''
+        Helper function to animate opening screen
+        '''
+        
         for char in text:
             print(char, end='', flush=True)
             time.sleep(delay)
         print()
     
-    def check_win_condition(self, symbol):
+    def check_win(self, symbol):
+        # horizontal check
         for row in self.board.grid:
             if all(item == symbol for item in row):
                 return True
-            
-            return False
+        
+        # vertical check
+        for col in range(self.grid_size):
+            if all(row[col] == symbol for row in self.board.grid):
+                return True
+        
+        # main diagonal check
+        if all(self.board.grid[i][i] == symbol for i in range(self.grid_size)):
+            return True
+        
+        # secondary diagonal check
+        if all(self.board.grid[i][self.grid_size - 1 - i] == symbol for i in range(self.grid_size)):
+            return True
+        
+        return False
     
     def setup_game(self):
         welcome_screen = """
@@ -107,15 +125,12 @@ class Game:
         input("Press Enter to continue... \n")
     
     def main_logic(self):
-        
-        # while grid is not full, or no one has won
         win = False
-        new_x = new_y = 0
         
         while not win:
             for i, player in enumerate(self.players):
                 x = y = -1
-                print(f"Player {player.name}'s Turn! Your symbol is {self.symbol_pool[i]} \n")
+                print(f"Player {player.name}'s Turn! Your symbol is {self.symbol_pool[i]}")
                 self.board.print_update_grid()
                 
                 while True:
@@ -129,19 +144,12 @@ class Game:
                             if not self.board.grid[x][y]:
                                 self.board.grid[x][y] = self.symbol_pool[i]
                                 self.board.print_update_grid(x, y, self.symbol_pool[i])
-                                # # self.len_adj[self.symbol_pool[i]].append((x, y))
                                 
-                                # # counts symbol occurrence
-                                # symbol_counts = {}
-                                # for ls in self.board.grid:
-                                #     for symbol in ls:
-                                #         if symbol:
-                                #             symbol_counts[symbol] = symbol_counts.get(symbol, 0) + 1
+                                if self.check_win(self.symbol_pool[i]):
+                                    print(f"Player {player.name} wins! \n")
+                                    win = True
                                 
-                                # if any(v > 2 for v in symbol_counts.values()):
-                                # for i in 
-                                
-
+                                break
                             else:
                                 Game.error_message("Position is already occupied! ")
 
@@ -150,16 +158,9 @@ class Game:
                         
                     except ValueError:
                         Game.error_message("Invalid input. Please enter a location in the same format as the example. ")
-                
-        # 4 2
-        # determine which player is active (boolean)
 
-        # check adjacency ie. diagonal / straight lines
-        
-        
-        
-        
-    
+                if win:
+                    break
 class Board:
     def __init__(self, cols: int, rows: int):
         assert cols == rows, "cols and rows must be same dimensions"
@@ -169,7 +170,7 @@ class Board:
         self.grid = [['' for _ in range(cols)] for _ in range(rows)]
     
     def print_update_grid(self, row_pos="", col_pos="", symbol=""):
-        connect = ""
+        print()
         for i in range(self.rows):
             k = 0
             for j in range(self.cols):
@@ -194,8 +195,5 @@ class Board:
 class Player:
     def __init__(self, name):
         self.name = name
-        
-    
-    
 
 Game()
