@@ -130,8 +130,7 @@ class Game:
         while not win:
             for i, player in enumerate(self.players):
                 x = y = -1
-                print(f"Player {player.name}'s Turn! Your symbol is {self.symbol_pool[i]}")
-                self.board.print_update_grid()
+                print(f"Player {player.name}'s Turn! Your symbol is {self.symbol_pool[i]}\n ")
                 
                 while True:
                     try:
