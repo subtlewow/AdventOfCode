@@ -127,6 +127,8 @@ class Game:
     def main_logic(self):
         win = False
         
+        self.board.print_update_grid()
+        
         while not win:
             for i, player in enumerate(self.players):
                 x = y = -1
@@ -166,28 +168,41 @@ class Board:
         
         self.rows = rows
         self.cols = cols
-        self.grid = [['' for _ in range(cols)] for _ in range(rows)]
+        self.grid = [['' for _ in range(cols+1)] for _ in range(rows+1)]
     
     def print_update_grid(self, row_pos="", col_pos="", symbol=""):
         print()
-        for i in range(self.rows):
-            k = 0
-            for j in range(self.cols):
+        for i in range(self.rows+1):
+            if i > 0:
+                print(i, end=" | ")
+            else:
+                print()
                 
+            for j in range(self.cols+1):
+                if i == 0 and j == 0:
+                    print("", end="    ")
+                    
+                if i == 0:
+                    if j < self.cols:
+                        print(j, end="   ")
+                    else:
+                        print(j)
+
                 # update grid when new element is seen
                 if row_pos and col_pos and symbol: 
                     if i == row_pos and j == col_pos:
                         self.grid[i][j] = symbol
                 
-                cell_content = self.grid[i][j] if self.grid[i][j] else '_'
-                
-                print(cell_content, end=' | ' if j < self.cols-1 else " ")
-                k += 1
-                
-            print()
+                if i > 0:
+                    cell_content = self.grid[i][j] if self.grid[i][j] else '_'
+                    print(cell_content, end=' | ' if j < self.cols-1 else " ")
+                    
+            if i == 0:    
+                print("   " + '--' * (self.cols+1) * 2)
 
-            if i < self.rows-1:
-                print('--x' + ('---x' * (self.cols-2)) + '--')
+            if 0 < i < self.rows-1:
+                # print('  | --x' + ('---x' * (self.cols-2)) + '--')
+                print('  | --x' + '-' * (self.cols))
                 
         print()
     
